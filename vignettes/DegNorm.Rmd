@@ -1,0 +1,223 @@
+---
+title: "DegNorm R package ([download](http://bioinfo.stats.northwestern.
+edu/~jzwang/DegNorm/DegNorm_1.0.tar.gz))"
+output: rmarkdown::html_vignette
+author: "Bin Xiong, Ji-Ping Wang"
+date: "04/27/2019"
+vignette: >
+    %\VignetteIndexEntry{DegNorm}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+---
+####Maintainer: Ji-Ping Wang, <<jzwang@northwestern.edu>>
+#### ([Python package download](https://nustatbioinfo.github.io/DegNorm/))
+
+```{r setup, include = FALSE}
+library(DegNorm)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+**Reference**:
+Xiong, B., Yang, Y., Fineis, F. Wang, J.-P., DegNorm: normalization of 
+generalized transcript degradation improves accuracy in RNA-seq analysis, 
+Genome Biology, 2019,20:75
+
+## What is DegNorm?
+
+DegNorm, short for **Deg**radation **Norm**alization, is a bioinformatics 
+pipeline designed to correct  for bias due to the heterogeneous patterns of
+transcript degradation in RNA-seq data. DegNorm 
+helps improve the accuracy of the differential expression analysis by 
+accounting for this degradation. 
+
+In practice, RNA samples are often more-or-less degraded, and the degradation
+severity is not only sample-specific, but gene-specific as well. It is known 
+that longer genes tend to degrade faster  than shorter ones. As such, 
+commonplace global degradation normalization approaches that impose a 
+single normalization factor on all genes within a sample can be ineffective
+in correcting for RNA degradation bias.
+
+
+## DegNorm pipline available formats
+
+We've developed an R package and an indepedent Python package
+([download](https://nustatbioinfo.github.io/DegNorm/)), 
+both of which allow to run the entire pipeline from the RNA-seq alignment
+(.bam) files.
+
+## DegNorm main features
+
+DegNorm R package contains two major functions: (1) processing the RNA-seq 
+alignment file (.bam) to calculate the coverage; and (2) using a core algorithm 
+written in RcppArmadillo to perform rank-one over-approximation on converage 
+matrices for each  gene to estimate the degramation index (DI) score for each 
+gene within each sample.
+
+DegNorm outputs DI scores together with degradation-normalized read counts 
+(based on DI scores).  It also provides supplementary functions for 
+visualization of degradation at both gene and sample level. The following 
+diagram illustrates the flow of DegNorm pipeline.  
+
+&nbsp;
+
+
+
+![A diagram of DegNorm.](
+http://bioinfo.stats.northwestern.edu/jzwang/DegNorm/degnorm_logo.png
+){width=90%}  
+
+
+&nbsp;
+
+The following vignette is intended to provide example codes for running 
+DegNorm R package. It presumes that you have successfully installed 
+DegNorm package. We illustrate below how to: 1) calculate the read coverage 
+curves for all genes within  all samples, and 2) perform degradation 
+normalization on coverage curves.  Either step is computing intensive. 
+Dependent upon the number of samples and the  sequencing depth, the total 
+computing time may last a few hours. DegNorm utilizes 
+the parallel computing functionality of R and automatically detects the number 
+of  cores on your computer to run jobs in parallel. Due to the large size 
+of bam file and  limited computing power of personal computer, we recommend
+users to  run it in servers or computing clusters.
+
+
+
+### 1. Compute coverage score based on alignment .bam files
+
+##### Set up input file: .bam and .gtf files.
+
+```{r}
+## specify bam_files from RNA-seq, you should replace it by your own bam files
+bam_file_list=list.files(path=system.file("extdata",package="DegNorm"),
+                        pattern=".bam$",full.names=TRUE)
+```
+The three bam files were subsetted from a specific region of chorosome 21 from 
+the origianl bam  for package size limitation. Original files can be found from
+the included reference above.
+
+```{r}
+## gtf_file you used for RNA-seq alignment, replace it by your own gtf file
+gtf_file=list.files(path=system.file("extdata",package="DegNorm"),
+                    pattern=".gtf$",full.names=TRUE)
+```
+
+##### Run main function to create read coverage matrix and read counts
+
+```{r}
+## calculate the read coverage score for all genes of all samples
+coverage_res_chr21_sub=read_coverage_batch(bam_file_list, gtf_file)
+```
+
+```{r,eval=FALSE}
+## save the coverage results
+save(coverage_res_chr21_sub,file="coverage_res_chr21_sub.Rda")
+```
+
+Function `read_coverage_batch` returns the coverage matrices as a list, 
+one per gene, and a dataframe for read counts, each row for one gene and 
+each column for one sample.
+
+```{r}
+data("coverage_res_chr21")
+## summarize the coverage results
+summary_CoverageClass(coverage_res_chr21)
+```
+
+```{r}
+## extract coverage scores and counts from coverage_res
+coverage_matrix=coverage_res_chr21$coverage
+counts=coverage_res_chr21$counts
+```
+### 2. DegNorm core algorithm
+
+Run degnorm core algorithm for degradation normalization. DegNorm purpose 
+is for differential expression analysis. Thus genes with extremely low read 
+counts from all samples are filtered out. The current filtering criterion is
+that if more than half of the samples have less than 5 read count, that gene 
+will not be considered in the degnorm algorithm. In the following example, I 
+am using downsamling to save time below (default). Alternatively you can set
+down_sampling = 0, which takes longer time.
+If `down_samplin= 1`, read coverage scores are binned with size by `grid_size` 
+for baseline selection to achieve better efficiency. The default `grid_size` is
+10 bp. We recommend to use a `grid_size` less than 50 bp. `iteration` specifies
+the big loop in DegNorm algorithm and 5 is usually sufficient. `loop` specifies
+the iteration number in the matrix factorization over-approximation.
+
+```{r,eval=FALSE}
+res_DegNorm_chr21 = degnorm(read_coverage = coverage_res_chr21[[1]],
+                    counts = coverage_res_chr21[[2]],
+                    iteration = 5,
+                    down_sampling = 1,
+                    grid_size=10,
+                    loop = 100)
+```
+If `down_samplin= 0`, then the argument `grid_size` is ignored.
+
+
+```{r,eval=FALSE}
+## save the DegNorm results
+save(res_DegNorm_chr21,file="res_DegNorm_chr21.Rda")
+```
+
+Function `degnorm` returns a list of multiple objects. counts_normed is the 
+one with degradation normalized read counts for you to input DeSeq or EdgeR
+for DE analysis.
+
+```{r}
+data("res_DegNorm_chr21")
+```
+
+```{r}
+## summary of the DegNorm output
+summary_DegNormClass(res_DegNorm_chr21)
+```
+
+The difference of number of genes between `res_DegNorm` and `coverage_res`
+is 207 (339-132). The 207 genes were filtered out from `degnorm` degradation
+normalization because less than half of the samples (3) have more than 5 
+read count.
+
+
+```{r}
+## extrac normalized read counts
+counts_normed=res_DegNorm_chr21$counts_normed
+```
+
+### 3. Plot functions in DegNorm
+
+DegNorm provides four plot functions for visualization of degradation and
+sample quality diagnosis.
+
+* plot_coverage
+* plot_corr
+* plot_heatmap
+* plot_boxplot
+
+##### -- Plot the before-/after-degradation coverage curves 
+
+```{r,fig.width=6,fig.height=5,message=FALSE,eval=FALSE}
+##gene named "SOD1"
+plot_coverage(gene_name="SOD1", coverage_output=coverage_res_chr21, 
+            degnorm_output=res_DegNorm_chr21)
+```
+
+##### -- Boxplot of the degradation index(DI) scores
+
+```{r,fig.width=6,fig.height=5,message=FALSE,warning=FALSE,eval=FALSE}
+plot_boxplot(DI=res_DegNorm_chr21$DI)
+```
+
+##### -- Heatmap plot of the degradation index(DI) scores
+
+```{r,fig.width=6,fig.height=5,message=FALSE,eval=FALSE}
+plot_heatmap(DI=res_DegNorm_chr21$DI)
+```
+
+#### -- Correlation matrix plot of degradation index(DI) scores
+
+```{r,fig.width=6,fig.height=5,message=FALSE,warning=FALSE,eval=FALSE}
+plot_corr(DI=res_DegNorm_chr21$DI)
+```
+
+

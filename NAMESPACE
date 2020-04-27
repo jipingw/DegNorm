@@ -1,0 +1,36 @@
+useDynLib(DegNorm, .registration=TRUE)
+importFrom(Rcpp, evalCpp)
+#exportPattern("^[[:alpha:]]+")
+import(methods)
+import(GenomicFeatures)
+import(Rsamtools)
+import(GenomicAlignments)
+import(parallel)
+import(foreach)
+import(doParallel)
+import(heatmaply)
+import(ggplot2)
+import(GenomicRanges)
+import(IRanges)
+import(S4Vectors)
+importFrom(plotly,plot_ly,subplot)
+importFrom(data.table, data.table)
+importFrom(stats, setNames)
+importFrom(utils, globalVariables)
+importFrom(plyr,mutate)
+
+## Export functions
+
+export(degnorm, 
+    read_coverage_batch,
+    summary_CoverageClass,
+    summary_DegNormClass,
+    plot_heatmap,
+    plot_corr,
+    plot_coverage,
+    plot_boxplot)
+
+
+
+
+
