@@ -26,6 +26,7 @@
 #                   size-reduced coverage matrix is fed for baseline selection
 #                     for efficiency consideration
 #    - grid_size: the bin size for average coverage score
+#    - cores: number of cores to use. Default is  maximum number cores -1
 # output: a list containing the following
 #    - DI: Degradation Index matrix;
 #    - counts_normed: DegNorm normalized counts;
@@ -34,7 +35,7 @@
 #               shape before degradation.
 ################################################################################
 degnorm <- function(read_coverage, counts, iteration=5, loop=100,
-                    down_sampling=1, grid_size=10){
+                    down_sampling=1, grid_size=10,cores=1){
     # filtering out genes with low expressions
     if(length(read_coverage)!=nrow(counts)) stop("Error: number of genes from
                     coverage list is inconsistent with the counts matrix!")
@@ -52,8 +53,9 @@ degnorm <- function(read_coverage, counts, iteration=5, loop=100,
     message("Initial estimation of count normalization factors...")
     norm.factor = colSums(counts)/median(colSums(counts))
     # Register multiple nodes
-    cores <- detectCores(logical = FALSE)
-    cl <- makeCluster(cores-1);  registerDoParallel(cl)
+    max.cores=detectCores(logical = FALSE)
+    if(max.cores-1 < cores) cores <- max.cores-1
+    cl <- makeCluster(cores);  registerDoParallel(cl)
     message("Initial degradation normalization without base-line selection...")
     rho = NULL
     i=1
@@ -69,7 +71,7 @@ degnorm <- function(read_coverage, counts, iteration=5, loop=100,
     message("DegNorm core algorithm starts...")
     # Calculating Degradation Index
     output=.degnorm_baseline(read_coverage, counts, iteration, loop,
-        down_sampling, grid_size,scale,counts.weighted)
+        down_sampling, grid_size,scale,counts.weighted,cores)
     message("DegNorm core algorithm done!")
     class(output)="DegNormClass"
     return(output)
@@ -77,11 +79,11 @@ degnorm <- function(read_coverage, counts, iteration=5, loop=100,
 
 ##degnorm baseline selection algorithm
 .degnorm_baseline=function(read_coverage, counts, iteration, loop,
-                        down_sampling, grid_size,scale,counts.weighted){
+                        down_sampling, grid_size,scale,counts.weighted,cores){
     for(i in seq_len(iteration)){
         cat(paste0("   DegNorm iteration ",i), "\n")
-        cores <- detectCores(logical = FALSE) #utilize multiple cores
-        cl <- makeCluster(cores-1);registerDoParallel(cl)
+        #cores <- detectCores(logical = FALSE) #utilize multiple cores
+        cl <- makeCluster(cores);registerDoParallel(cl)
         res = NULL;j=1;m=dim(counts)[1];n=dim(counts)[2]
         if(down_sampling==0){
             res = foreach(j = seq_len(m), .multicombine = TRUE,

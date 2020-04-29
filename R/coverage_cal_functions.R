@@ -6,6 +6,7 @@
 ##       - bam_file_list: list of bam file names
 ##       - gtf_file: name of gtf file where the RNA-seq data were aligned with 
 ##                 reference to.
+##       - cores: number of cores to use.
 ##    output:
 ##       - coverageClass object, which includes:
 ##         (1) list of coverage matrices 
@@ -21,7 +22,7 @@
 ##      setting isProperPair as TRUE as some fragments length may exceed 200bp.
 ##   5. User can modify scanBamParam in the R codes below as needed.
 ###############################################################################
-read_coverage_batch=function(bam_file_list,gtf_file){
+read_coverage_batch=function(bam_file_list,gtf_file,cores=1){
     i=1; options(warn=-1)
     all_genes=.gtf_parse(gtf_file)
     ##simplify bam file names if path information present in file names
@@ -34,15 +35,16 @@ read_coverage_batch=function(bam_file_list,gtf_file){
             indexBam(bam_file_list[k])
         }
         cat ("Computing coverage for", sample_names[k],"...", "\n")
-        results=read_coverage(bam_file_list[k], all_genes)
+        max.cores=detectCores(logical = FALSE)
+        if(max.cores-1<cores) cores <- max.cores-1
+        results=read_coverage(bam_file_list[k], all_genes,cores)
         ##separate coverage and read_counts
         coverage_RLE=RleList()    ## coverage in Rle format
         read_counts=data.frame()  ## data frame for read-counts
         read_counts=do.call(rbind,lapply(results,`[[`,2))
         coverage_RLE=lapply(results,`[[`,1)
         ##convert Rle object into vector coverage
-        cores <- detectCores(logical = FALSE)
-        cl <- makeCluster(cores-1)
+        cl <- makeCluster(cores)
         registerDoParallel(cl)
         coverage_RLE=coverage_RLE[lengths(coverage_RLE)>0]
         coverage_vector=foreach(i = seq_along(coverage_RLE),
@@ -110,6 +112,7 @@ read_coverage_batch=function(bam_file_list,gtf_file){
 ##    input:
 ##       - bam_file: bam file names
 ##       - all_genes: parsed genes.gtf file
+##       - cores: number of cores
 ##
 ##    output:
 ##       - coverageClass object, which includes:
@@ -119,9 +122,8 @@ read_coverage_batch=function(bam_file_list,gtf_file){
 ################################################################################
 
 
-read_coverage=function(bam_file,all_genes){
-    cores <- detectCores(logical = FALSE)
-    cl <- makeCluster(cores-1)
+read_coverage=function(bam_file,all_genes,cores){
+    cl <- makeCluster(cores)
     registerDoParallel(cl)
 
     ##Filter out empty chromosomes (i.e. no genes  on chromosomes)
