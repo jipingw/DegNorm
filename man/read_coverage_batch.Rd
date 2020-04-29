@@ -23,13 +23,14 @@ setting isProperPair as TRUE as some fragments length may exceed 200bp.
 5. User can modify scanBamParam in the R codes below as needed.
 }
 \usage{
-read_coverage_batch(bam_file_list,gtf_file) 
+read_coverage_batch(bam_file_list,gtf_file,cores=1) 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
 \item{bam_file_list}{a character vector of bam file names.}
 \item{gtf_file}{the gtf file that RNA-seq reads were aligned with
 reference to.}
+\item{cores}{number of cores to be used. Default=1.}
 }
 
 \value{
@@ -46,7 +47,7 @@ gtf_file <- list.files(path=system.file("extdata",package="DegNorm"),
     pattern=".gtf$",full.names=TRUE)
 
 # run read_coverage_batch to calculate read coverage curves and read counts
-coverage_res=read_coverage_batch(bam_file_list, gtf_file)
+coverage_res=read_coverage_batch(bam_file_list, gtf_file,cores=2)
 }
 \seealso{
 \code{\link[DegNorm]{read_coverage}}

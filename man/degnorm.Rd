@@ -9,7 +9,8 @@ Main function to perform degradation normalization.
 gene within each sample and return the degradation-normalized read counts.
 }
 \usage{
-degnorm(read_coverage,counts,iteration,loop,down_sampling=1,grid_size=10)
+degnorm(read_coverage,counts,iteration,loop,down_sampling=1,grid_size=10,
+cores=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +27,8 @@ degnorm(read_coverage,counts,iteration,loop,down_sampling=1,grid_size=10)
     be used for baseline selection. This increases the efficiency of algorithm 
     while maintaining comparable accuracy.}
     \item{grid_size}{default size is 10 bp.}
+    \item{cores}{number of cores. Default number if 1. Users should input 
+    the maximum possible number of cores for efficiency.}
 }
 
 \value{
@@ -47,14 +50,15 @@ DI score is too large. 4 = baseline selection didn't coverge. }
 
 
 \examples{
-## coverage_res_chr21 is a \code{CoverageClass} object from DegNorm Package.
+##coverage_res_chr21 is a \code{CoverageClass} object from DegNorm Package.
 data(coverage_res_chr21)
 res_DegNorm = degnorm(read_coverage = coverage_res_chr21[[1]],
                     counts = coverage_res_chr21[[2]],
                     iteration = 2,
                     down_sampling = 1,
                     grid_size=10,
-                    loop = 20)
+                    loop = 20,
+                    cores=2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
