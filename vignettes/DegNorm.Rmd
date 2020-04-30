@@ -1,21 +1,30 @@
+
 ---
-title: "DegNorm R package ([download](http://bioinfo.stats.northwestern.
-edu/~jzwang/DegNorm/DegNorm_1.0.tar.gz))"
-output: rmarkdown::html_vignette
+title: "DegNorm R package"
 author: "Bin Xiong, Ji-Ping Wang"
-date: "04/27/2019"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
 vignette: >
     %\VignetteIndexEntry{DegNorm}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
 ---
-####Maintainer: Ji-Ping Wang, <<jzwang@northwestern.edu>>
-#### ([Python package download](https://nustatbioinfo.github.io/DegNorm/))
+
+
+**Maintainer**: Ji-Ping Wang, <<jzwang@northwestern.edu>>
+
+([**Python package download**](https://nustatbioinfo.github.io/DegNorm/))**
+
+
 
 ```{r setup, include = FALSE}
 library(DegNorm)
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
 ```
+
 
 **Reference**:
 Xiong, B., Yang, Y., Fineis, F. Wang, J.-P., DegNorm: normalization of 
@@ -106,8 +115,11 @@ gtf_file=list.files(path=system.file("extdata",package="DegNorm"),
 
 ```{r}
 ## calculate the read coverage score for all genes of all samples
-coverage_res_chr21_sub=read_coverage_batch(bam_file_list, gtf_file)
+coverage_res_chr21_sub=read_coverage_batch(bam_file_list, gtf_file,cores=2)
 ```
+`cores` argument specifies the number of cores to use. Users should
+try to use as many as possible cores to maximize the computing efficiency.
+
 
 ```{r,eval=FALSE}
 ## save the coverage results
@@ -150,7 +162,8 @@ res_DegNorm_chr21 = degnorm(read_coverage = coverage_res_chr21[[1]],
                     iteration = 5,
                     down_sampling = 1,
                     grid_size=10,
-                    loop = 100)
+                    loop = 100,
+                    cores=2)
 ```
 If `down_samplin= 0`, then the argument `grid_size` is ignored.
 
