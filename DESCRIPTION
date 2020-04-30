@@ -15,4 +15,4 @@ LinkingTo: Rcpp, RcppArmadillo,S4Vectors,IRanges
 NeedsCompilation: yes
 Packaged: 2019-12-08 00:10:02 UTC; Ji-Ping Wang
 Suggests:knitr,rmarkdown,formatR
-VignetteBuilder: knitr,rmarkdown,formatR
+VignetteBuilder: knitr
