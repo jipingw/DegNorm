@@ -166,7 +166,7 @@ res_DegNorm_chr21 = degnorm(read_coverage = coverage_res_chr21[[1]],
                     cores=2)
 ```
 
-If `down_samplin= 0`, then the argument `grid_size` is ignored.
+If `down_sampling= 0`, then the argument `grid_size` is ignored.
 
 ``` r
 ## save the DegNorm results
