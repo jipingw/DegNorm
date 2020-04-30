@@ -8,7 +8,7 @@ Maintainer: Ji-Ping Wang <jzwang@northwestern.edu>
 biocViews:  RNASeq, Normalization, GeneExpression, Alignment,Coverage, DifferentialExpression, BatchEffect,Software,Sequencing, ImmunoOncology, QualityControl, DataImport
 Description: This package performs degradation normalization in bulk RNA-seq data to improve differential expression analysis accuracy.
 License: LGPL (>= 3)
-Depends: R (>= 3.6.0), methods,stats,data.table
+Depends: R (>= 4.0.0), methods,stats,data.table
 Imports: Rcpp (>= 1.0.2),GenomicFeatures, parallel, foreach, S4Vectors, doParallel, Rsamtools (>= 1.31.2), GenomicAlignments, heatmaply,
         ggplot2, GenomicRanges, IRanges, plyr, plotly, utils
 LinkingTo: Rcpp, RcppArmadillo,S4Vectors,IRanges
