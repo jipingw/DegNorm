@@ -387,7 +387,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <a class="sourceLine" id="cb7-5" data-line-number="5">                    <span class="dt">grid_size=</span><span class="dv">10</span>,</a>
 <a class="sourceLine" id="cb7-6" data-line-number="6">                    <span class="dt">loop =</span> <span class="dv">100</span>,</a>
 <a class="sourceLine" id="cb7-7" data-line-number="7">                    <span class="dt">cores=</span><span class="dv">2</span>)</a></code></pre></div>
-<p>If <code>down_samplin= 0</code>, then the argument <code>grid_size</code> is ignored.</p>
+<p>If <code>down_sampling= 0</code>, then the argument <code>grid_size</code> is ignored.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co">## save the DegNorm results</span></a>
 <a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw">save</span>(res_DegNorm_chr21,<span class="dt">file=</span><span class="st">&quot;res_DegNorm_chr21.Rda&quot;</span>)</a></code></pre></div>
 <p>Function <code>degnorm</code> returns a list of multiple objects. counts_normed is the one with degradation normalized read counts for you to input DeSeq or EdgeR for DE analysis.</p>
