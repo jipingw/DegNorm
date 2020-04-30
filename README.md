@@ -79,8 +79,11 @@ gtf_file=list.files(path=system.file("extdata",package="DegNorm"),pattern=".gtf$
 
 ```{r,eval=FALSE}
 ## calculate the read coverage score for all genes of all samples
-coverage_res=read_coverage_batch(bam_file_list, gtf_file)
+coverage_res=read_coverage_batch(bam_file_list, gtf_file,cores=2)
 ```
+`cores` argument specifies the number of cores to use. Users should try 
+to use as many as possible cores to maximize the computing efficiency.
+
 
 ```{r,eval=FALSE}
 ## save the coverage results
