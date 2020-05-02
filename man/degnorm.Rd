@@ -58,7 +58,7 @@ res_DegNorm = degnorm(read_coverage = coverage_res_chr21[[1]],
                     down_sampling = 1,
                     grid_size=10,
                     loop = 20,
-                    cores=2)
+                    cores=3)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

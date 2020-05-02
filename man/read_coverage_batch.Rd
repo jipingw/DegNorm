@@ -47,7 +47,7 @@ gtf_file <- list.files(path=system.file("extdata",package="DegNorm"),
     pattern=".gtf$",full.names=TRUE)
 
 # run read_coverage_batch to calculate read coverage curves and read counts
-coverage_res=read_coverage_batch(bam_file_list, gtf_file,cores=2)
+coverage_res=read_coverage_batch(bam_file_list, gtf_file,cores=3)
 }
 \seealso{
 \code{\link[DegNorm]{read_coverage}}

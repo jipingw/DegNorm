@@ -131,7 +131,6 @@ read_coverage=function(bam_file,all_genes,cores){
     chrom=as.vector(unique(unlist(runValue(seqnames(all_genes)))))
 
     ##for memory issue, coverage is calculated by chromosomes
-
     sample_name=rev(strsplit(bam_file,"[\\\\]|[/]")[[1]])[1]
     i=1
     if(suppressMessages(testPairedEndBam(bam_file))==TRUE){
