@@ -1,7 +1,7 @@
 Package: DegNorm
 Type: Package
 Title: DegNorm
-Version: 0.99.7
+Version: 0.99.8
 Date: 2020-04-30
 Author: Bin Xiong and Ji-Ping Wang
 Maintainer: Ji-Ping Wang <jzwang@northwestern.edu>
