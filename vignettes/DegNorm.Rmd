@@ -111,7 +111,7 @@ gtf_file=list.files(path=system.file("extdata",package="DegNorm"),
 
 ##### Run main function to create read coverage matrix and read counts
 
-```{r}
+```{r,eval=FALSE}
 ## calculate the read coverage score for all genes of all samples
 coverage_res_chr21_sub=read_coverage_batch(bam_file_list, gtf_file,cores=2)
 ```
