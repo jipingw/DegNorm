@@ -23,8 +23,8 @@ arma::uvec bin_drop (int bin_size, int bin_number, arma::rowvec res_std_max){
   bin_mean(bin_number-1)=mean(res_std_max(a));
   
   uvec drop_bin=find(bin_mean==max(bin_mean));
-  
-  if (drop_bin(0)==bin_number-1){
+  //cast uword to int
+  if ((int)drop_bin(0)==bin_number-1){
     a=regspace<arma::uvec>(0,(bin_number-1)*bin_size-1);
   }else{
     uvec pos=regspace<arma::uvec>(0,res_std_max.n_cols-1);
@@ -164,7 +164,7 @@ List optiNMFCPP(arma::mat f, arma::vec normFactor, int loop) {
     //perform non-baseline selection NMF
     // if there are still more than 50 bp left after filtering, proceed; 
     // otherwise return default values
-    if(filter.size()<50||nonZero.size()<num_sample){
+    if(filter.size()<50||(int) nonZero.size()<num_sample){
         return output;
     } 
     
@@ -312,7 +312,7 @@ List optiNMFCPP_grid(arma::mat f, arma::vec normFactor, int loop, int grid_size)
 
       //perform non-baseline selection NMF
       
-      if(filter.size()<50||nonZero.size()<num_sample){
+      if(filter.size()<50||(int) nonZero.size()<num_sample){
         return output;
       } 
       
@@ -417,7 +417,9 @@ List optiNMFCPP_grid(arma::mat f, arma::vec normFactor, int loop, int grid_size)
           rho = 1 - sum(ffilt_bin,1)/(sum(fitted,1) + 1);
           bin_number=bin_number-1;
 
-          if(bin_number<0.3*gene_Length/grid_size/bin_size||ffilt_bin.n_cols<200/grid_size/bin_size||min(sum(fitted,1)) < 0.01){
+          if(bin_number<0.3*gene_Length/grid_size/bin_size||
+             (int) ffilt_bin.n_cols<200/grid_size/bin_size||
+             min(sum(fitted,1)) < 0.01){
             break;
           }                           
         }
