@@ -1,0 +1,38 @@
+1. genes.gtf file and genes_chr21.gtf
+
+   The genes.gtf file was from Homo sapiens, and can be downloaded from http://useast.ensembl.org/Homo_sapiens/Info/Index. In command winder, 
+   run the following script to obtain .gtf for genes in chromosome 21.
+
+    > grep -Fw chr21 genes.gtf >genes_chr21.gtf 
+
+2. GBM data (brain tumor) RNA-seq data from SRA: SRR873822,SRR873834,SRR873838
+   
+   Run the following two lines of  scripts in the command line. These are paired 
+   end reads. In total, the size will be about 35 G.
+
+    > fastq-dump -I --split-files SRR873822
+    > fastq-dump -I --split-files SRR873834
+    > fastq-dump -I --split-files SRR873838
+
+3. Align the paired-end reads to human genome 
+
+   User can use useBowtie2 or STAR or other alignment tools for this step.
+   Suppose the alignment output as  SRR873822.bam, SRR873834.bam, and SRR873838.bam 
+   respectively.
+   
+   
+4. bam file subsetting (only extract chr21:9900000-10000000 for illustration)
+
+   Download and install Samtoolsf from http://www.htslib.org. In the
+   directory where bam files are:
+
+    >samtools view -h SRR873822.bam chr21:9900000-10000000 >SRR873822.bam_chr21_9900000-10000000
+    >samtools view -h SRR873834.bam chr21:9900000-10000000 >SRR873834.bam_chr21_9900000-10000000
+    >samtools view -h SRR873838.bam chr21:9900000-10000000 >SRR873838.bam_chr21_9900000-10000000
+
+5. bam file indexing
+
+    >samtools index SRR873822.bam_chr21_9900000-10000000
+    >samtools index SRR873834.bam_chr21_9900000-10000000
+    >samtools index SRR873838.bam_chr21_9900000-10000000
+   

@@ -52,7 +52,6 @@ DI score is too large. 4 = baseline selection didn't coverge. }
 \examples{
 ##coverage_res_chr21 is a \code{CoverageClass} object from DegNorm Package.
 data(coverage_res_chr21)
-\dontrun{
 res_DegNorm = degnorm(read_coverage = coverage_res_chr21[[1]],
                     counts = coverage_res_chr21[[2]],
                     iteration = 2,
@@ -60,7 +59,7 @@ res_DegNorm = degnorm(read_coverage = coverage_res_chr21[[1]],
                     grid_size=10,
                     loop = 20,
                     cores=2)
-}}
+}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }% use one of  RShowDoc("KEYWORDS")

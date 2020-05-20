@@ -1,2 +1,12 @@
-DegNorm v1.0 (Release date: 2020-01-24)
-==============
+CHANGES IN VERSION 0.99.8
+-------------------------
+
+SUBMIT TO BIOCONDUCTOR  FOR REVIEW
+
+    o Corrected warnings and errors
+
+
+CHANGES IN VERSION 0.99.9
+-------------------------
+  
+    o Made most required changes from review

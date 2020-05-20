@@ -1,26 +1,24 @@
 useDynLib(DegNorm, .registration=TRUE)
 importFrom(Rcpp, evalCpp)
-#exportPattern("^[[:alpha:]]+")
 import(methods)
-import(GenomicFeatures)
-import(Rsamtools)
-import(GenomicAlignments)
-import(parallel)
-import(foreach)
-import(doParallel)
-import(heatmaply)
-import(ggplot2)
-import(GenomicRanges)
-import(IRanges)
-import(S4Vectors)
+importFrom(GenomicAlignments,GAlignments,readGAlignmentPairs,readGAlignments)
+importFrom(GenomicFeatures,pcoverageByTranscript,exonsBy,makeTxDbFromGFF)
+importFrom(Rsamtools,ScanBamParam,BamFile,indexBam,scanBamFlag,testPairedEndBam)
+importFrom(IRanges,RleList, extractList,IntegerList,stack)
+importFrom(heatmaply,heatmaply)
+importFrom(GenomicRanges,findOverlaps,reduce,seqinfo,seqnames,strand)
+importFrom(S4Vectors, countQueryHits, endoapply, queryHits, runValue)
+importFrom(ggplot2,aes, facet_grid, geom_boxplot, geom_line, ggplot, 
+    stat_boxplot, theme,theme_classic, theme_light, xlab, ylab, ylim)
+importFrom(doParallel,registerDoParallel,stopImplicitCluster)
+importFrom(foreach, "%dopar%", foreach)
+importFrom(parallel, detectCores,makeCluster,stopCluster)
 importFrom(plotly,plot_ly,subplot)
 importFrom(data.table, data.table)
-importFrom(stats, setNames)
+importFrom(stats, setNames,cor,median)
 importFrom(utils, globalVariables)
 importFrom(plyr,mutate)
-
 ## Export functions
-
 export(degnorm, 
     read_coverage_batch,
     summary_CoverageClass,

@@ -76,7 +76,8 @@ plot_coverage <- function(gene_name, coverage_output, degnorm_output){
     colnames(dat.curve)[3:4] = c("coverage", "sample")
 
     p = ggplot(data = dat.curve, aes(x = dat.curve$position, 
-                    y = dat.curve$coverage, col = dat.curve$sample)) +
+                    y = dat.curve$coverage, col = dat.curve$sample))+
+        xlab("Transcript position") + ylab("Coverage score") +
         geom_line(size = 0.8) + theme_light() + facet_grid(dat.curve$label~.)
 return(p)
 }
