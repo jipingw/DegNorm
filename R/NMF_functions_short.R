@@ -82,9 +82,9 @@ degnorm <- function(read_coverage, counts, iteration=5, loop=100,
                         down_sampling, grid_size,scale,counts.weighted,cores){
     for(i in seq_len(iteration)){
         cat(paste0("   DegNorm iteration ",i), "\n")
-        cores <- detectCores(logical = FALSE) #utilize multiple cores
-        #cl <- makeCluster(cores)
-        cl <- makeCluster(cores-1)
+        #cores <- detectCores(logical = FALSE) #utilize multiple cores
+        cl <- makeCluster(cores)
+        #cl <- makeCluster(cores-1)
         registerDoParallel(cl)
         res = NULL;j=1;m=dim(counts)[1];n=dim(counts)[2]
         if(down_sampling==0){
