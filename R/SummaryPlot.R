@@ -40,12 +40,12 @@ summary_DegNormClass=function(object){
 ################################################################################
 # plot functions for heatmap, boxplot and coverage curves
 ################################################################################
-
 ################################################################################
 # plot.coverage: function to plot before/after degradation normalization 
 #               coverage curve
 ################################################################################
-plot_coverage <- function(gene_name, coverage_output, degnorm_output){
+plot_coverage <- function(gene_name, coverage_output, degnorm_output, 
+                        group=NULL){
     # coverage plot before and after normalization for one single gene
     # input:
     #    - gene_name: the name of the gene
@@ -53,58 +53,46 @@ plot_coverage <- function(gene_name, coverage_output, degnorm_output){
     #    - degnorm_output: the output from DegNorm function
     # output:
     #    - a ggplot2 object of coverage plot before/after DegNorm normalization
-
+    #    - group: a vector of factors representing sample conditions in the 
+    #      order of the coverage matrix columns, either integer or char.
     # retrieve raw coverage from read_coverage_batch output coverage_res
     raw.coverage.matrix = data.table(t(coverage_output$coverage[[gene_name]]))
-
+    n.sample = dim(raw.coverage.matrix)[2]
     # retrieve abundance scale K and envelope function from DegNorm output 
     K=as.matrix(degnorm_output$K[which(row.names(degnorm_output$K)
                                         ==gene_name),])
     envelop=degnorm_output$envelop[[gene_name]]
     degnorm.coverage.matrix = data.table(t(K%*%envelop))
-
     n=nrow(raw.coverage.matrix)
-    raw.coverage.matrix=cbind(position=rep(seq_len(n),3),label=rep("raw",3*n),
-                            stack(raw.coverage.matrix))
-    degnorm.coverage.matrix=cbind(position=rep(seq_len(n),3), 
-                                label=rep("DegNorm",3*n),
+    raw.coverage.matrix=cbind(position=rep(seq_len(n),n.sample),label=
+                            rep("raw",n.sample*n),stack(raw.coverage.matrix))
+    degnorm.coverage.matrix=cbind(position=rep(seq_len(n),n.sample),
+                                label=rep("DegNorm",n.sample*n),
                                 stack(degnorm.coverage.matrix))
-
     dat.curve = data.table(rbind(raw.coverage.matrix, degnorm.coverage.matrix))
-
-    # rename column names
     colnames(dat.curve)[3:4] = c("coverage", "sample")
-
-    p = ggplot(data = dat.curve, aes(x = dat.curve$position, 
-                    y = dat.curve$coverage, col = dat.curve$sample))+
+    default.palette=c("#0072B2","#D55E00","#009E73","#999999", "#E69F00", 
+                    "#56B4E9", "#F0E442",  "#CC79A7")
+    if(is.null(group)){ #customize color palette
+        if(n.sample <= length(default.palette)){
+            custom_color = default.palette[1:n.sample]
+        }else{
+            custom_color = viridis::plasma(n.sample)
+        }
+    }else{
+        n.group = table(group)
+        if(length(n.group) <= length(default.palette)){
+            custom_color = rep(default.palette[1:length(n.group)], n.group)
+        }else{
+            custom_color=rep(viridis::plasma(length(n.group), end=0.9),n.group)
+        }
+    }
+    p = ggplot(data = dat.curve, aes(x = dat.curve$position,
+                            y = dat.curve$coverage,col = dat.curve$sample))+
         xlab("Transcript position") + ylab("Coverage score") +
+        scale_color_manual(values = custom_color) +
         geom_line(size = 0.8) + theme_light() + facet_grid(dat.curve$label~.)
-return(p)
-}
-
-
-################################################################################
-# Analytical codes to reproduce descriptive figures of DI scores
-################################################################################
-
-plot_boxplot<-function(DI){
-    # input:
-    #     DI: a data table with each row  gene, each column for sample
-    # output file:
-    #     a ggplot2 object for boxplot
-
-    dat_DI = data.frame(stack(DI))
-    colnames(dat_DI)=c("gene_names","sample","DI_score")
-
-    p.boxplot = 
-        ggplot(data = dat_DI, aes(x = dat_DI$sample, y = dat_DI$DI_score)) + 
-        xlab("Sample") + ylab("DI score") +
-        stat_boxplot(geom ='errorbar') +
-        geom_boxplot(aes(x = dat_DI$sample, y = dat_DI$DI_score, 
-                        col = dat_DI$sample), outlier.shape = NA) +
-        theme_classic() + ylim(c(0,max(DI))) +
-        theme(legend.position="none")
-    return(p.boxplot)
+    return(p)
 }
 
 ################################################################################
