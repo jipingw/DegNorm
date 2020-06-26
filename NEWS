@@ -10,3 +10,15 @@ CHANGES IN VERSION 0.99.9
 -------------------------
   
     o Made most required changes from review
+
+
+CHANGES IN VERSION 0.99.10
+--------------------------
+
+   o Made additional required changes from review
+
+
+CHANGES IN VERSION 0.99.11
+--------------------------
+
+   o fix a bug in plot_coverage function and make changes in color scheme.
