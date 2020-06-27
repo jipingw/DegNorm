@@ -222,7 +222,7 @@ and sample quality diagnosis.
 ``` r
 ##gene named "SOD1"
 plot_coverage(gene_name="SOD1", coverage_output=coverage_res_chr21, 
-            degnorm_output=res_DegNorm_chr21)
+            degnorm_output=res_DegNorm_chr21,group=c(0,0,1))
 ```
 
 ##### – Boxplot of the degradation index(DI) scores
