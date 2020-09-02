@@ -7,7 +7,7 @@ Coverage plot functions for DegNorm
 \description{
 \code{plot_coverage} plots the before- and after-degradation coverage curves}
 \usage{
-plot_coverage(gene_name, coverage_output, degnorm_output)
+plot_coverage(gene_name, coverage_output, degnorm_output, group=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

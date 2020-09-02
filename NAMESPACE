@@ -9,7 +9,8 @@ importFrom(heatmaply,heatmaply)
 importFrom(GenomicRanges,findOverlaps,reduce,seqinfo,seqnames,strand)
 importFrom(S4Vectors, countQueryHits, endoapply, queryHits, runValue)
 importFrom(ggplot2,aes, facet_grid, geom_boxplot, geom_line, ggplot, 
-    stat_boxplot, theme,theme_classic, theme_light, xlab, ylab, ylim)
+    stat_boxplot, theme,theme_classic, theme_light, xlab, ylab, ylim,
+    scale_color_manual)
 importFrom(doParallel,registerDoParallel,stopImplicitCluster)
 importFrom(foreach, "%dopar%", foreach)
 importFrom(parallel, detectCores,makeCluster,stopCluster)
@@ -18,6 +19,7 @@ importFrom(data.table, data.table)
 importFrom(stats, setNames,cor,median)
 importFrom(utils, globalVariables)
 importFrom(plyr,mutate)
+import(viridis)
 ## Export functions
 export(degnorm, 
     read_coverage_batch,

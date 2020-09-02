@@ -75,16 +75,16 @@ plot_coverage <- function(gene_name, coverage_output, degnorm_output,
                     "#56B4E9", "#F0E442",  "#CC79A7")
     if(is.null(group)){ #customize color palette
         if(n.sample <= length(default.palette)){
-            custom_color = default.palette[1:n.sample]
+            custom_color = default.palette[seq_len(n.sample)]
         }else{
-            custom_color = viridis::plasma(n.sample)
+            custom_color = plasma(n.sample)
         }
     }else{
         n.group = table(group)
         if(length(n.group) <= length(default.palette)){
-            custom_color = rep(default.palette[1:length(n.group)], n.group)
+            custom_color = rep(default.palette[seq_len(n.group)], n.group)
         }else{
-            custom_color=rep(viridis::plasma(length(n.group), end=0.9),n.group)
+            custom_color=rep(plasma(length(n.group), end=0.9),n.group)
         }
     }
     p = ggplot(data = dat.curve, aes(x = dat.curve$position,
@@ -93,6 +93,30 @@ plot_coverage <- function(gene_name, coverage_output, degnorm_output,
         scale_color_manual(values = custom_color) +
         geom_line(size = 0.8) + theme_light() + facet_grid(dat.curve$label~.)
     return(p)
+}
+
+################################################################################
+# generate boxplots from DI scores
+################################################################################
+
+plot_boxplot<-function(DI){
+    # input:
+    #     DI: a data table with each row  gene, each column for sample
+    # output file:
+    #     a ggplot2 object for boxplot
+    
+    dat_DI = data.frame(stack(DI))
+    colnames(dat_DI)=c("gene_names","sample","DI_score")
+    
+    p.boxplot = 
+        ggplot(data = dat_DI, aes(x = dat_DI$sample, y = dat_DI$DI_score)) + 
+        xlab("Sample") + ylab("DI score") +
+        stat_boxplot(geom ='errorbar') +
+        geom_boxplot(aes(x = dat_DI$sample, y = dat_DI$DI_score, 
+                        col = dat_DI$sample), outlier.shape = NA) +
+        theme_classic() + ylim(c(0,max(DI))) +
+        theme(legend.position="none")
+    return(p.boxplot)
 }
 
 ################################################################################
