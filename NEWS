@@ -22,3 +22,10 @@ CHANGES IN VERSION 0.99.11
 --------------------------
 
    o fix a bug in plot_coverage function and make changes in color scheme.
+
+
+CHANGES IN VERSION 0.99.12
+--------------------------
+
+   o version bump.
+
