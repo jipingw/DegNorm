@@ -1,7 +1,7 @@
 Package: DegNorm
 Type: Package
 Title: DegNorm: degradation normalization for RNA-seq data
-Version: 0.99.12
+Version: 0.99.13
 Date: 2020-09-22
 Author: Bin Xiong and Ji-Ping Wang
 Maintainer: Ji-Ping Wang <jzwang@northwestern.edu>
