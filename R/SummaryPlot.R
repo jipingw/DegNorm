@@ -80,7 +80,7 @@ plot_coverage <- function(gene_name, coverage_output, degnorm_output,
             custom_color = plasma(n.sample)
         }
     }else{
-        n.group = table(group)
+        n.group = length(unique(group))
         if(length(n.group) <= length(default.palette)){
             custom_color = rep(default.palette[seq_len(n.group)], n.group)
         }else{
