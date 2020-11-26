@@ -45,12 +45,10 @@ counts (based on DI scores). It also provides supplementary functions
 for visualization of degradation at both gene and sample level. The
 following diagram illustrates the flow of DegNorm pipeline.
 
- 
 
 ![A diagram of
-DegNorm.](http://bioinfo.stats.northwestern.edu/jzwang/DegNorm/degnorm_logo.png)
+DegNorm.](http://bioinfo.stats.northwestern.edu/DegNorm/degnorm_logo.png)
 
- 
 
 The following vignette is intended to provide example codes for running
 DegNorm R package. It presumes that you have successfully installed
