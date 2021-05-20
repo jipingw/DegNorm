@@ -26,6 +26,8 @@ knitr::opts_chunk$set(
     collapse = TRUE,
     comment = "#>"
 )
+library(knitr)
+knit_hooks$set(optipng = hook_optipng)
 ```
 
 
@@ -82,7 +84,7 @@ diagram illustrates the flow of DegNorm pipeline.
 
 
 
-![A diagram of DegNorm.](degnorm_logo.png){width=90%}  
+![A diagram of DegNorm.](degnorm_logo.png){width=60%}  
 
 
 &nbsp;
@@ -217,6 +219,8 @@ sample quality diagnosis.
 * plot_boxplot
 
 #### -- Plot the before-/after-degradation coverage curves 
+
+
 
 ```{r,fig.width=6,fig.height=5,message=FALSE,eval=TRUE}
 ##gene named "SOD1"
