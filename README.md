@@ -48,7 +48,7 @@ following diagram illustrates the flow of DegNorm pipeline.
  
 
 ![A diagram of
-DegNorm.](http://bioinfo.stats.northwestern.edu/jzwang/DegNorm/degnorm_logo.png)
+DegNorm.](http://bioinfo.stats.northwestern.edu/~jzwang/DegNorm/degnorm_logo.png)
 
  
 
