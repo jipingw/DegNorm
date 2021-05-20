@@ -7,7 +7,7 @@ Coverage plot functions for DegNorm
 \description{
 \code{plot_coverage} plots the before- and after-degradation coverage curves}
 \usage{
-plot_coverage(gene_name, coverage_output, degnorm_output, group=NULL)
+plot_coverage(gene_name, coverage_output, degnorm_output, group=NULL, samples=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,12 +20,15 @@ plot_coverage(gene_name, coverage_output, degnorm_output, group=NULL)
 biological conditions of the samples. Coverage curves will be plotted
 in the same color for the same group. Default is NULL. By default all
 curves will plotted in different colors.}
+\item{samples}{a string vector for the subset of samples to be plotted.
+NULL means all samples to be plotted. The length of samples
+must be of the same length of group if both specified.}
 }
 \value{
 The coverage curve before and after degradation normalization.
 }
 \details{
-\code{plot_coverage}{ outputs the coverage curves before- and after-degradation 
+\code{plot_coverage}{outputs the coverage curves before- and after-degradation 
 normalization.}
 }
 
