@@ -70,8 +70,7 @@ List NMFCPP( const arma::mat f, int loop) { //output svd
 }
 
 
-/*////////////////////////////////////////////////////////////////////
-// optiNMFCPP without baseline selection
+/*///////////////////////////////////////////////////////////////////
 // [[Rcpp::export]]
 List optiNMFCPP_no_base(arma::mat f, arma::vec normFactor, int loop) {
   
@@ -83,6 +82,7 @@ List optiNMFCPP_no_base(arma::mat f, arma::vec normFactor, int loop) {
   int convergence=0; // 0 means nothing was done
   List output;
   arma::mat ffilt, res, fitted;
+  rowvec E;    
   
   
   //list output initialization
@@ -104,7 +104,6 @@ List optiNMFCPP_no_base(arma::mat f, arma::vec normFactor, int loop) {
   if(filter.size()<50||nonZero.size()<num_sample){
     return output;
   } 
-  
   List modelsvd=NMFCPP(ffilt,loop);
   rowvec d=modelsvd[0];
   rowvec u=modelsvd[1];
@@ -116,20 +115,24 @@ List optiNMFCPP_no_base(arma::mat f, arma::vec normFactor, int loop) {
   }
   K=d(0)*abs(u.t());
   rho = 1 - sum(ffilt,1)/(sum(fitted,1) + 1);
-  
+
+  f.each_col() /= K; //each row divide by K    
+  E=max(f);  //envelop function
+    
   convergence=2 ;  //2 means no-baseline selection;
   output("rho")=rho;
   output("convergence")=convergence;
   output("K")=K;
+  output("envelop")=E;    
   return output;
-}         
-*/
+}  
+*/       
+
 
 ////////////////////////////////////////////////////////////////////
 // optiNMFCPP without binning
 // [[Rcpp::export]]
-
-List optiNMFCPP(arma::mat f, arma::vec normFactor, int loop) {
+List optiNMFCPP(arma::mat f, arma::vec normFactor, int loop, int baseline) {
         
     //initialize output list
     
@@ -143,8 +146,6 @@ List optiNMFCPP(arma::mat f, arma::vec normFactor, int loop) {
     int convergence=0; // 0 means nothing was done
     List output;
     arma::mat ffilt, res, fitted;
-   
-
     //list output initialization
     output("rho")=rho;
     output("convergence")=convergence;
@@ -190,7 +191,7 @@ List optiNMFCPP(arma::mat f, arma::vec normFactor, int loop) {
     // if gene_length after filtering is short, or the minimum degradation ratio is >0.2,
     // which means all samples are degraded, do not perform baseline seleciton. 
 
-    if(gene_Length<200||min(rho)>0.2){
+    if(gene_Length<200||min(rho)>0.2||baseline==0){
         convergence=2 ;  //2 means no-baseline selection;
         output("rho")=rho;
         output("convergence")=convergence;
@@ -268,7 +269,6 @@ List optiNMFCPP(arma::mat f, arma::vec normFactor, int loop) {
             output["convergence"]=4;       // baseline selection didn't converge.
           }
          }                
-    
 
     f.each_col() /= K; //each row divide by K    
     E=max(f);  //envelop function

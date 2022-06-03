@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // bin_drop
 arma::uvec bin_drop(int bin_size, int bin_number, arma::rowvec res_std_max);
 RcppExport SEXP _DegNorm_bin_drop(SEXP bin_sizeSEXP, SEXP bin_numberSEXP, SEXP res_std_maxSEXP) {
@@ -32,15 +37,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // optiNMFCPP
-List optiNMFCPP(arma::mat f, arma::vec normFactor, int loop);
-RcppExport SEXP _DegNorm_optiNMFCPP(SEXP fSEXP, SEXP normFactorSEXP, SEXP loopSEXP) {
+List optiNMFCPP(arma::mat f, arma::vec normFactor, int loop, int baseline);
+RcppExport SEXP _DegNorm_optiNMFCPP(SEXP fSEXP, SEXP normFactorSEXP, SEXP loopSEXP, SEXP baselineSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type f(fSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type normFactor(normFactorSEXP);
     Rcpp::traits::input_parameter< int >::type loop(loopSEXP);
-    rcpp_result_gen = Rcpp::wrap(optiNMFCPP(f, normFactor, loop));
+    Rcpp::traits::input_parameter< int >::type baseline(baselineSEXP);
+    rcpp_result_gen = Rcpp::wrap(optiNMFCPP(f, normFactor, loop, baseline));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -62,7 +68,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_DegNorm_bin_drop", (DL_FUNC) &_DegNorm_bin_drop, 3},
     {"_DegNorm_NMFCPP", (DL_FUNC) &_DegNorm_NMFCPP, 2},
-    {"_DegNorm_optiNMFCPP", (DL_FUNC) &_DegNorm_optiNMFCPP, 3},
+    {"_DegNorm_optiNMFCPP", (DL_FUNC) &_DegNorm_optiNMFCPP, 4},
     {"_DegNorm_optiNMFCPP_grid", (DL_FUNC) &_DegNorm_optiNMFCPP_grid, 4},
     {NULL, NULL, 0}
 };

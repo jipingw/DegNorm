@@ -9,8 +9,8 @@
     .Call(`_DegNorm_NMFCPP`, f, loop)
 }
 
-.optiNMFCPP <- function(f, normFactor, loop) {
-    .Call(`_DegNorm_optiNMFCPP`, f, normFactor, loop)
+.optiNMFCPP <- function(f, normFactor, loop, baseline) {
+    .Call(`_DegNorm_optiNMFCPP`, f, normFactor, loop, baseline)
 }
 
 .optiNMFCPP_grid <- function(f, normFactor, loop, grid_size) {

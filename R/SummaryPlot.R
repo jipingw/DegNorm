@@ -60,25 +60,25 @@ plot_coverage <- function(gene_name, coverage_output, degnorm_output,
     #    - group: a vector of factors representing sample conditions in the 
     #      order of the coverage matrix columns, either integer or char.
     # retrieve raw coverage from read_coverage_batch output coverage_res
-    if(!is.null(samples) && !is.null(group) && length(group)!=length(samples)) stop(
-        "Error: group and samples arguments should be of same length if not null!")
-    if(sum(samples %in% colnames(coverage_output$counts))<length(samples)) stop(
-        "Error: some sample names do not exist!")
+    if(!is.null(samples)&&!is.null(group)&&length(group)!=length(samples)){
+        stop("Error: group and samples arguments are of different length!")}
+    if(sum(samples %in% colnames(coverage_output$counts))<length(samples)){
+         stop("Error: some sample names do not exist!")}
     if(length(group)>ncol(coverage_output$counts)) stop("Error: Number of
         samples in Group exceeds the number of samples in the data!")
     raw.coverage.matrix = data.table(t(coverage_output$coverage[[gene_name]]))
     n.sample = dim(raw.coverage.matrix)[2]
     # retrieve abundance scale K and envelope function from DegNorm output 
     K=as.matrix(degnorm_output$K[which(row.names(degnorm_output$K)
-                                       ==gene_name),])
+                                        ==gene_name),])
     envelop=degnorm_output$envelop[[gene_name]]
     degnorm.coverage.matrix = data.table(t(K%*%envelop))
     n=nrow(raw.coverage.matrix)
     raw.coverage.matrix=cbind(position=rep(seq_len(n),n.sample),label=
-                                  rep("raw",n.sample*n),stack(raw.coverage.matrix))
+                        rep("raw",n.sample*n),stack(raw.coverage.matrix))
     degnorm.coverage.matrix=cbind(position=rep(seq_len(n),n.sample),
-                                  label=rep("DegNorm",n.sample*n),
-                                  stack(degnorm.coverage.matrix))
+                                label=rep("DegNorm",n.sample*n),
+                                stack(degnorm.coverage.matrix))
     dat.curve = data.table(rbind(raw.coverage.matrix, degnorm.coverage.matrix))
     colnames(dat.curve)[3:4] = c("coverage", "sample")
     
@@ -86,7 +86,7 @@ plot_coverage <- function(gene_name, coverage_output, degnorm_output,
         dat.curve=dat.curve[dat.curve$sample==samples]
     }
     default.palette=c("#0072B2","#D55E00","#009E73","#999999", "#E69F00", 
-                      "#56B4E9", "#F0E442",  "#CC79A7")
+                        "#56B4E9", "#F0E442",  "#CC79A7")
     if(is.null(group)){ #customize color palette
         if(n.sample <= length(default.palette)){
             custom_color = default.palette[seq_len(n.sample)]
@@ -102,7 +102,7 @@ plot_coverage <- function(gene_name, coverage_output, degnorm_output,
         }
     }
     p = ggplot(data = dat.curve, aes(x = dat.curve$position,
-                                     y = dat.curve$coverage,col = dat.curve$sample))+
+                            y = dat.curve$coverage,col = dat.curve$sample))+
         xlab("Transcript position") + ylab("Coverage score") +
         scale_color_manual(values = custom_color) +
         geom_line(size = 0.8) + theme_light() + facet_grid(dat.curve$label~.)

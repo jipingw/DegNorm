@@ -96,6 +96,7 @@ read_coverage_batch=function(bam_file_list,gtf_file,cores=1){
     ##sorting exons on - strand into ascending rank
     all_genes=endoapply(all_genes, function(x) if(runValue(strand(x))=="-") 
                 {return(rev(x))}else{return(x)})
+    all_genes <- IRanges::reduce(all_genes)
     cat("done", "\n")
     return(all_genes)
 }

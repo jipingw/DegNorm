@@ -1,8 +1,8 @@
 Package: DegNorm
 Type: Package
 Title: DegNorm: degradation normalization for RNA-seq data
-Version: 1.7.0
-Date: 2020-09-22
+Version: 1.7.1
+Date: 2022-06-03
 Author: Bin Xiong and Ji-Ping Wang
 Maintainer: Ji-Ping Wang <jzwang@northwestern.edu>
 biocViews:  RNASeq, Normalization, GeneExpression, Alignment,Coverage, DifferentialExpression, BatchEffect,Software,Sequencing, ImmunoOncology, QualityControl, DataImport
@@ -13,7 +13,7 @@ Imports: Rcpp (>= 1.0.2),GenomicFeatures, parallel, foreach, S4Vectors, doParall
         ggplot2, GenomicRanges, IRanges, plyr, plotly, utils,viridis
 LinkingTo: Rcpp, RcppArmadillo,S4Vectors,IRanges
 NeedsCompilation: yes
-Packaged: 2020-04-31 00:10:02 UTC; Ji-Ping Wang
+Packaged: 2022-06-03 00:10:02 UTC; Ji-Ping Wang
 Suggests:knitr,rmarkdown,formatR
 VignetteBuilder: knitr
 BugReports: https://github.com/jipingw/DegNorm/issues

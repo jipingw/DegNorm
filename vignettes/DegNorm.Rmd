@@ -17,7 +17,7 @@ vignette: >
 
 **Maintainer**: Ji-Ping Wang, <<jzwang@northwestern.edu>>
 
-([**Python package download**](https://nustatbioinfo.github.io/DegNorm/))**
+<!-- ([**Python package download**](https://nustatbioinfo.github.io/DegNorm/))**-->
 
 
 ```{r setup, include = FALSE}
@@ -30,13 +30,12 @@ library(knitr)
 knit_hooks$set(optipng = hook_optipng)
 ```
 
-
 **Reference**:
 Xiong, B., Yang, Y., Fineis, F. Wang, J.-P., DegNorm: normalization of 
 generalized transcript degradation improves accuracy in RNA-seq analysis, 
 Genome Biology, 2019,20:75
 
-# What is DegNorm?
+## What is DegNorm?
 
 DegNorm, short for **Deg**radation **Norm**alization, is a bioinformatics 
 pipeline designed to correct  for bias due to the heterogeneous patterns of
@@ -52,14 +51,22 @@ single normalization factor on all genes within a sample can be ineffective
 in correcting for RNA degradation bias.
 
 
-# DegNorm pipline available formats
+## DegNorm pipline available formats
 
 We've developed an R package and an indepedent Python package
 ([download](https://nustatbioinfo.github.io/DegNorm/)), 
 both of which allow to run the entire pipeline from the RNA-seq alignment 
-(.bam) files.
+(.bam) files. **For most-updated version, we recommend to use R package from bioconductor**.
 
-# Install DegNorm R package
+## DegNorm version 1.3.4 updates
+
+In version 1.3.1, we made following updates:
+1. In `plot_coverage` funciton, an `samples` options is provided to allow user to select which
+samples to plot for coverage curves.
+2. We fixed a bug in `DegNorm` funciton. In earlier version, we used genes with maximum `rho<0.1` from initial SVD to determine the scaling factor before running core algorithm. For some data with many samples and large degradation, it may return `NA` to cause issues. 
+
+
+## Install DegNorm R package
 
 ```{r,eval=FALSE}
 if(!requireNamespace("BiocManager", quietly = TRUE))
@@ -67,7 +74,7 @@ if(!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("DegNorm")
 ```
 
-# DegNorm main features
+## DegNorm main features
 
 DegNorm R package contains two major functions: (1) processing the RNA-seq 
 alignment file (.bam) to calculate the coverage; and (2) using a core algorithm 
@@ -103,9 +110,9 @@ users to  run it in servers or computing clusters.
 
 
 
-## 1. Compute coverage score based on alignment .bam files
+### 1. Compute coverage score based on alignment .bam files
 
-#### Set up input file: .bam and .gtf files.
+##### Set up input file: .bam and .gtf files.
 
 ```{r}
 ## specify bam_files from RNA-seq, you should replace it by your own bam files
@@ -122,7 +129,7 @@ gtf_file=list.files(path=system.file("extdata",package="DegNorm"),
                     pattern=".gtf$",full.names=TRUE)
 ```
 
-#### Run main function to create read coverage matrix and read counts
+##### Run main function to create read coverage matrix and read counts
 
 ```{r,eval=TRUE}
 ## calculate the read coverage score for all genes of all samples
@@ -152,7 +159,8 @@ summary_CoverageClass(coverage_res_chr21)
 coverage_matrix=coverage_res_chr21$coverage
 counts=coverage_res_chr21$counts
 ```
-## 2. DegNorm core algorithm
+
+### 2. DegNorm core algorithm
 
 Run degnorm core algorithm for degradation normalization. DegNorm purpose 
 is for differential expression analysis. Thus genes with extremely low read 
@@ -208,7 +216,7 @@ read count.
 counts_normed=res_DegNorm_chr21$counts_normed
 ```
 
-## 3. Plot functions in DegNorm
+### 3. Plot functions in DegNorm
 
 DegNorm provides four plot functions for visualization of degradation and
 sample quality diagnosis.
@@ -218,35 +226,49 @@ sample quality diagnosis.
 * plot_heatmap
 * plot_boxplot
 
-#### -- Plot the before-/after-degradation coverage curves 
+&nbsp;
 
+##### -- Plot the before-/after-degradation coverage curves 
 
-
-```{r,fig.width=6,fig.height=5,message=FALSE,eval=TRUE}
+```{r,fig.width=5,fig.height=4,message=FALSE,eval=TRUE}
 ##gene named "SOD1"
 plot_coverage(gene_name="SOD1", coverage_output=coverage_res_chr21, 
             degnorm_output=res_DegNorm_chr21,group=c(0,1,1))
 ```
 
-#### -- Boxplot of the degradation index(DI) scores
+In version 1.3.1, a new argument $samples$ was added so the user
+can specifiy which samples to plot. 
 
-```{r,fig.width=6,fig.height=5,message=FALSE,warning=FALSE,eval=TRUE}
+```{r,fig.width=5,fig.height=4,message=FALSE,eval=TRUE}
+##gene named "SOD1"
+plot_coverage(gene_name="SOD1", coverage_output=coverage_res_chr21, 
+            degnorm_output=res_DegNorm_chr21,group=c(0,1), 
+            samples=c("SRR873822_chr21.bam", "SRR873834_chr21.bam"))
+```
+&nbsp;
+
+##### -- Boxplot of the degradation index(DI) scores
+
+```{r,fig.width=5,fig.height=4,message=FALSE,warning=FALSE,eval=TRUE}
 plot_boxplot(DI=res_DegNorm_chr21$DI)
 ```
+&nbsp;
 
-#### -- Heatmap plot of the degradation index(DI) scores
+##### -- Heatmap plot of the degradation index(DI) scores
 
-```{r,fig.width=6,fig.height=5,message=FALSE,eval=TRUE}
+```{r,fig.width=5,fig.height=4,message=FALSE,eval=TRUE}
 plot_heatmap(DI=res_DegNorm_chr21$DI)
 ```
+&nbsp;
 
-#### -- Correlation matrix plot of degradation index(DI) scores
+##### -- Correlation matrix plot of degradation index(DI) scores
 
-```{r,fig.width=6,fig.height=5,message=FALSE,warning=FALSE,eval=TRUE}
+```{r,fig.width=5,fig.height=4,message=FALSE,warning=FALSE,eval=TRUE}
 plot_corr(DI=res_DegNorm_chr21$DI)
 ```
+&nbsp;
 
-# Session info
+## Session info
 
 ```{r sessionInfo}
 sessionInfo()

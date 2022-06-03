@@ -65,13 +65,20 @@ degnorm <- function(read_coverage, counts, iteration=5, loop=100,
     stopImplicitCluster()
     stopCluster(cl)
     norm.factor = colSums(counts[apply(rho,1,max) < 0.10,])
+    if(sum(norm.factor)>0){
+        baseline=1
+    }else{
+        norm.factor=apply(counts,2,sum)
+        baseline=0
+    }
     norm.factor = norm.factor/stats::median(norm.factor)
     scale = norm.factor
     counts.weighted = sweep(counts, 2, norm.factor, FUN = "/")
     message("DegNorm core algorithm starts...")
     # Calculating Degradation Index
     output=.degnorm_baseline(read_coverage, counts, iteration, loop,
-        down_sampling, grid_size,scale,counts.weighted,cores)
+                            down_sampling, grid_size,scale,counts.weighted,
+                            cores, baseline)
     message("DegNorm core algorithm done!")
     class(output)="DegNormClass"
     return(output)
@@ -79,7 +86,8 @@ degnorm <- function(read_coverage, counts, iteration=5, loop=100,
 
 ##degnorm baseline selection algorithm
 .degnorm_baseline=function(read_coverage, counts, iteration, loop,
-                        down_sampling, grid_size,scale,counts.weighted,cores){
+                        down_sampling, grid_size,scale,counts.weighted,cores,
+                        baseline=1){
     for(i in seq_len(iteration)){
         cat(paste0("   DegNorm iteration ",i), "\n")
         #cores <- detectCores(logical = FALSE) #utilize multiple cores
@@ -89,12 +97,12 @@ degnorm <- function(read_coverage, counts, iteration=5, loop=100,
         res = NULL;j=1;m=dim(counts)[1];n=dim(counts)[2]
         if(down_sampling==0){
             res = foreach(j = seq_len(m), .multicombine = TRUE,
-                    .export = c(".optiNMFCPP",".NMFCPP",".bin_drop")) %dopar%{
-                    .optiNMFCPP(read_coverage[[j]], scale, loop)}
+                .export = c(".optiNMFCPP",".NMFCPP",".bin_drop")) %dopar%{
+                .optiNMFCPP(read_coverage[[j]], scale, loop, baseline)}
         }else if (down_sampling==1){
             res = foreach(j = seq_len(m), .multicombine = TRUE,
-            .export = c(".optiNMFCPP_grid",".NMFCPP",".bin_drop")) %dopar%{
-            .optiNMFCPP_grid(read_coverage[[j]], scale, loop, grid_size)}
+                .export = c(".optiNMFCPP_grid",".NMFCPP",".bin_drop")) %dopar%{
+                .optiNMFCPP_grid(read_coverage[[j]], scale, loop, grid_size)}
         }else{
             stop("Error:down_sampling argument should either 0 or 1!")
         }
