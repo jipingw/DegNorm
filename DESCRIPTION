@@ -1,8 +1,8 @@
 Package: DegNorm
 Type: Package
 Title: DegNorm: degradation normalization for RNA-seq data
-Version: 1.13.1
-Date: 2022-06-03
+Version: 1.13.2
+Date: 2024-03-26
 Author: Bin Xiong and Ji-Ping Wang
 Maintainer: Ji-Ping Wang <jzwang@northwestern.edu>
 biocViews:  RNASeq, Normalization, GeneExpression, Alignment,Coverage, DifferentialExpression, BatchEffect,Software,Sequencing, ImmunoOncology, QualityControl, DataImport
