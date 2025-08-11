@@ -1,12 +1,18 @@
 Package: DegNorm
 Type: Package
 Title: DegNorm: degradation normalization for RNA-seq data
-Version: 1.18.0
+Version: 1.18.1
 Date: 2024-03-26
-Author: Bin Xiong and Ji-Ping Wang
-Maintainer: Ji-Ping Wang <jzwang@northwestern.edu>
+Authors@R:
+    person("bin", "Xiong",
+        email = "binxiong2012@u.northwestern.edu",
+        role = c("aut"))
+    person("Ji-Ping", "Wang",
+        email = "jzwang@northwestern.edu",
+        role = c("aut", "cre"),
+        comment = c(ORCID="0000-0002-8398-939X"))
 biocViews:  RNASeq, Normalization, GeneExpression, Alignment,Coverage, DifferentialExpression, BatchEffect,Software,Sequencing, ImmunoOncology, QualityControl, DataImport
-Description: This package performs degradation normalization in bulk RNA-seq data to improve differential expression analysis accuracy.
+Description: This package performs degradation normalization in bulk RNA-seq data to improve differential expression analysis accuracy. It provides estimates for each gene within each sample.
 License: LGPL (>= 3)
 Depends: R (>= 4.0.0), methods
 Imports: Rcpp (>= 1.0.2),GenomicFeatures, txdbmaker, parallel, foreach, S4Vectors, doParallel, Rsamtools (>= 1.31.2), GenomicAlignments, heatmaply, data.table, stats,

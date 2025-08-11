@@ -59,9 +59,11 @@ degnorm <- function(read_coverage, counts, iteration=5, loop=100,
     message("Initial degradation normalization without base-line selection...")
     rho = NULL
     i=1
-    rho = foreach(i = seq_len(m),.combine = "rbind",
+    #rho = foreach(i = seq_len(m),.combine = "rbind",
+    rho = foreach(i = read_coverage,.combine = "rbind",
                     .export = ".ratioSVD") %dopar% {
-                    .ratioSVD(f = read_coverage[[i]])}
+    #                .ratioSVD(f = read_coverage[[i]])}
+                    .ratioSVD(f = i)}
     stopImplicitCluster()
     stopCluster(cl)
     norm.factor = colSums(counts[apply(rho,1,max) < 0.10,])
@@ -96,13 +98,18 @@ degnorm <- function(read_coverage, counts, iteration=5, loop=100,
         registerDoParallel(cl)
         res = NULL;j=1;m=dim(counts)[1];n=dim(counts)[2]
         if(down_sampling==0){
-            res = foreach(j = seq_len(m), .multicombine = TRUE,
+        #    res = foreach(j = seq_len(m), .multicombine = TRUE,
+             res = foreach(j = read_coverage, .multicombine = TRUE,
                 .export = c(".optiNMFCPP",".NMFCPP",".bin_drop")) %dopar%{
-                .optiNMFCPP(read_coverage[[j]], scale, loop, baseline)}
+        #       .optiNMFCPP(read_coverage[[j]], scale, loop, baseline)}
+                .optiNMFCPP(j, scale, loop, baseline)}
+             
         }else if (down_sampling==1){
-            res = foreach(j = seq_len(m), .multicombine = TRUE,
+        #    res = foreach(j = seq_len(m), .multicombine = TRUE,
+            res = foreach(j = read_coverage, .multicombine = TRUE,
                 .export = c(".optiNMFCPP_grid",".NMFCPP",".bin_drop")) %dopar%{
-                .optiNMFCPP_grid(read_coverage[[j]], scale, loop, grid_size)}
+        #        .optiNMFCPP_grid(read_coverage[[j]], scale, loop, grid_size)}
+                .optiNMFCPP_grid(j, scale, loop, grid_size)}
         }else{
             stop("Error:down_sampling argument should either 0 or 1!")
         }

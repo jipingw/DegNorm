@@ -47,10 +47,12 @@ read_coverage_batch=function(bam_file_list,gtf_file,cores=1){
         cl <- makeCluster(cores)
         registerDoParallel(cl)
         coverage_RLE=coverage_RLE[lengths(coverage_RLE)>0]
-        coverage_vector=foreach(i = seq_along(coverage_RLE),
+    #    coverage_vector=foreach(i = seq_along(coverage_RLE),
+        coverage_vector=foreach(i = coverage_RLE,
                 .packages=c("Rsamtools","GenomicAlignments","GenomicFeatures"),
                             .inorder=TRUE,.multicombine=TRUE) %dopar%
-                    {  res=lapply(coverage_RLE[[i]],as.vector)
+                    {   # res=lapply(coverage_RLE[[i]],as.vector)
+                        res=lapply(i,as.vector)
                         return(res)}
         stopImplicitCluster()
         stopCluster(cl)
@@ -137,7 +139,7 @@ read_coverage=function(bam_file,all_genes,cores){
     if(suppressMessages(testPairedEndBam(bam_file))==TRUE){
         cat("  ",sample_name, "is a paired-end bam file","\n")
         results <- foreach(i = seq_along(chrom),
-                        .export=c(".paired_end_cov_by_ch",
+                           .export=c(".paired_end_cov_by_ch",
                         ".single_end_cov_by_ch", ".IntersectionStrict2"),
                         .packages = c("Rsamtools", "GenomicAlignments",
                                     "GenomicFeatures","data.table"),
